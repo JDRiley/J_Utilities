@@ -36,6 +36,7 @@ int main(int argc, char* argv[]){
 				if(time_running.count() > settings.wait_timeout()){
 					throw J_Error_T(L"Could Not Move Window");
 				}
+
 				
 			}
 			break;
@@ -59,6 +60,11 @@ int main(int argc, char* argv[]){
 			assert(!"This position type not implemented");
 		case jomike::movewindow_settings::Position_Type::POSITION:
 			assert(!"This position type not implemented");
+		case jomike::movewindow_settings::Position_Type::SWITCH_DESKTOP:
+			if(!switch_desktop(safe_int_cast(settings.destination_desktop()))){
+				throw J_Error_T(L"Could Not switch desktop");
+			}
+			break;
 		default:
 			assert(!"This position type not implemented");
 		}

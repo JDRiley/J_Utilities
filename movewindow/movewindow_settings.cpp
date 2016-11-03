@@ -50,7 +50,10 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 		dest_position_args.push_back(&right_switch);
 
 
+		TCLAP::ValueArg<long>
+			destination_desktop_arg("", "switch-to-desktop", "switches to specified desktop", false, 0, "long int");
 
+		dest_position_args.push_back(&destination_desktop_arg);
 
 
 		TCLAP::ValueArg<std::string>
@@ -62,7 +65,7 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 		dest_position_args.apply([&](TCLAP::Arg* y_arg){command_line.add(y_arg); });
 
 
-		TCLAP::UnlabeledValueArg<std::string> window_name_arg("window-name", "Name of window to move", true, "", "string", false);
+		TCLAP::UnlabeledValueArg<std::string> window_name_arg("window-name", "Name of window to move", false, "", "string", false);
 
 
 		command_line.add(window_name_arg);
@@ -72,7 +75,15 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 
 		command_line.add(wait_timeout_arg);
 
+	
+	
 		command_line.parse(argc, argv);
+
+
+		if(destination_desktop_arg.isSet()){
+			M_destination_desktop = destination_desktop_arg.getValue();
+			M_position_type = Position_Type::SWITCH_DESKTOP;
+		}
 
 		if(parent_window_name_arg.isSet()){
 			set_parent_window_name(parent_window_name_arg.getValue());
@@ -92,8 +103,9 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 		}
 
 
-
-		if(left_switch.isSet()){
+		if(Position_Type::ERROR != M_position_type){
+			//nothing
+		}else if(left_switch.isSet()){
 			M_position_type = Position_Type::LEFT;
 		} else if(right_switch.isSet()){
 			M_position_type = Position_Type::RIGHT;
