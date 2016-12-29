@@ -19,7 +19,7 @@ using namespace jtl;
 static bool list_windows();
 
 //TODO: Add regexpressing to window names. so you can find windows that match an expression
-//TODO: movewindow --left in start_command_shell is acting wierd. also passing test case errantly
+
 int main(int argc, char* argv[]){
 	try{
 		movewindow_settings settings(argc, argv);
