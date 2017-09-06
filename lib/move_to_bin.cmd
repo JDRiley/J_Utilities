@@ -1,0 +1,1 @@
+cp movewindow.exe J:/Tools/bin/movewindow.exe
