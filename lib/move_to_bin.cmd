@@ -1,1 +1,1 @@
-cp movewindow.exe J:/Tools/bin/movewindow.exe
+cp movewindow.exe I:/Tools/bin/movewindow.exe

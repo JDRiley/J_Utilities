@@ -44,34 +44,28 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 
 
 		TCLAP::SwitchArg left_switch("", "left", "Move To left of Screen", false);
-
 		base_command_args.push_back(&left_switch);
 
 		TCLAP::SwitchArg right_switch("", "right", "Move To right of Screen", false);
-
 		base_command_args.push_back(&right_switch);
 
-
 		TCLAP::SwitchArg pos_switch("", "pos", "Move to pos, requires -x and -y args", false);
-
 		base_command_args.push_back(&pos_switch);
 
 		TCLAP::SwitchArg
 			maximize_switch("", "maximize", "switches to specified desktop", false);
-
 		base_command_args.push_back(&maximize_switch);
 		
 		
 		TCLAP::SwitchArg list_windows_switch("", "list-windows", "list Windows", false);
-
 		base_command_args.push_back(&list_windows_switch);
-
-
 
 		TCLAP::ValueArg<long>
 			destination_desktop_arg("", "switch-to-desktop", "switches to specified desktop", false, 0, "long int");
-
 		base_command_args.push_back(&destination_desktop_arg);
+
+		TCLAP::SwitchArg show_mouse_loc_switch("", "show-mouse-location", "Shows mouse location. Clicking ends program.", false);
+		base_command_args.push_back(&show_mouse_loc_switch);
 
 		base_command_args.apply([&](TCLAP::Arg* y_arg){command_line.add(y_arg); });
 
@@ -115,7 +109,11 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 
 		if(destination_desktop_arg.isSet()){
 			M_destination_desktop = destination_desktop_arg.getValue();
-			M_position_type = Base_Command_Type::SWITCH_DESKTOP;
+			M_base_command = Base_Command_Type::SWITCH_DESKTOP;
+		}
+
+		if (show_mouse_loc_switch.isSet()) {
+			M_base_command = Base_Command_Type::SHOW_MOUSE_LOCATION;
 		}
 
 		if(parent_window_name_arg.isSet()){
@@ -132,25 +130,25 @@ movewindow_settings::movewindow_settings(int argc, char* argv[]){
 				, [](TCLAP::Arg* y_arg){return y_arg->isSet(); });
 
 		if(1 != num_args_set){
-			throw J_Error_T(L"Improper number of destination position args. 1 should be set");
+			throw J_Error_T(L"Improper number of work args. 1 should be set");
 		}
 
 
-		if(Base_Command_Type::ERROR != M_position_type){
+		if(Base_Command_Type::ERROR != M_base_command){
 			//nothing
 		}else if(left_switch.isSet()){
-			M_position_type = Base_Command_Type::LEFT;
+			M_base_command = Base_Command_Type::LEFT;
 		} else if(right_switch.isSet()){
-			M_position_type = Base_Command_Type::RIGHT;
+			M_base_command = Base_Command_Type::RIGHT;
 		} else if(pos_switch.isSet()){
-			M_position_type = Base_Command_Type::POSITION;
+			M_base_command = Base_Command_Type::POSITION;
 			validate_position_args(x_pos_arg, y_pos_arg);
 			set_x_pos(x_pos_arg.getValue());
 			set_y_pos(y_pos_arg.getValue());
 		}else if(list_windows_switch.isSet()){
-			M_position_type = Base_Command_Type::LIST_WINDOWS;
+			M_base_command = Base_Command_Type::LIST_WINDOWS;
 		} else if(maximize_switch.isSet()){
-			M_position_type = Base_Command_Type::MAXIMIZE;
+			M_base_command = Base_Command_Type::MAXIMIZE;
 		}else{
 			throw J_Error_T(L"Could Not Determine Position Type");
 		}
@@ -183,11 +181,11 @@ const std::string& movewindow_settings::window_name()const{
 }
 
 void movewindow_settings::set_position_type(const Base_Command_Type& irk_position_type){
-	M_position_type = irk_position_type;
+	M_base_command = irk_position_type;
 }
 
 const jomike::movewindow_settings::Base_Command_Type& movewindow_settings::position_type()const{
-	return M_position_type;
+	return M_base_command;
 }
 
 void movewindow_settings::set_parent_window_name(const std::string& irk_child_window_name){

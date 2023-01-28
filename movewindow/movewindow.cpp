@@ -7,7 +7,6 @@
 //
 //
 #include <thread>
-
 //
 #include <iostream>
 
@@ -17,7 +16,7 @@ using std::wcout;
 using namespace jtl;
 
 static bool list_windows();
-
+static void show_mouse_location();
 //TODO: Add regexpressing to window names. so you can find windows that match an expression
 
 int main(int argc, char* argv[]){
@@ -71,6 +70,10 @@ int main(int argc, char* argv[]){
 					success = false;
 				}
 				break;
+			case movewindow_settings::Base_Command_Type::SHOW_MOUSE_LOCATION:
+				show_mouse_location();
+				success = true;
+				break;
 			default:
 				assert(!"This position type not implemented");
 			}
@@ -108,4 +111,37 @@ bool list_windows(){
 	print_all_windows(wcout);
 	return true;
 
+}
+
+void show_mouse_location() {
+	std::cout << "Curs";
+
+	int x_pos = 0;
+	int y_pos = 0;
+	while (true) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		int new_x_pos = mouse_x_pos();
+		int new_y_pos = mouse_y_pos();
+
+		bool changed = false;
+		if (x_pos != new_x_pos) {
+			changed = true;
+			x_pos = new_x_pos;
+		}
+		if (y_pos != new_y_pos) {
+			changed = true;
+			y_pos = new_y_pos;
+		}
+
+		if (!changed) {
+			continue;
+		}
+
+		
+	std::cout << '\r' << x_pos << "," << y_pos << "         ";
+
+	}
+
+
+	
 }

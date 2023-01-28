@@ -17,7 +17,7 @@ public:
 	const std::string& window_name()const;
 	enum class Base_Command_Type{
 		LEFT, RIGHT, UP, DOWN, MAXIMIZE
-		, POSITION, SWITCH_DESKTOP, LIST_WINDOWS, ERROR
+		, POSITION, SWITCH_DESKTOP, LIST_WINDOWS, SHOW_MOUSE_LOCATION, ERROR
 	};
 
 
@@ -76,7 +76,7 @@ private:
 	j_llint M_x_pos;
 	j_llint M_y_pos;
 
-	Base_Command_Type M_position_type = Base_Command_Type::ERROR;
+	Base_Command_Type M_base_command = Base_Command_Type::ERROR;
 };
 
 
